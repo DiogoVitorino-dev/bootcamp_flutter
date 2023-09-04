@@ -1,4 +1,4 @@
-import 'package:bootcamp_flutter/pages/home.dart';
+import 'package:bootcamp_flutter/pages/login.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -8,7 +8,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: const Home(),
+      home: const Login(),
       theme: ThemeData(
         primarySwatch: Colors.red,
         textTheme: GoogleFonts.openSansTextTheme()
