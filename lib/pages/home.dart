@@ -1,4 +1,5 @@
 import 'package:bootcamp_flutter/pages/cadastros.dart';
+import 'package:bootcamp_flutter/pages/dados.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
@@ -22,7 +23,14 @@ class _HomeState extends State<Home> {
             child: Column(
               children: [
                 InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const Cadastro(title: "Cadastro"),
+                          ));
+                    },
                     child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 10),
                         width: double.infinity,
@@ -32,18 +40,18 @@ class _HomeState extends State<Home> {
                   height: 3,
                 ),
                 InkWell(
-                    onTap: () {
+									onTap: () {
                       Navigator.pop(context);
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const Cadastro(title: "Meus dados"),
+                            builder: (context) => const Dados(),
                           ));
                     },
                     child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 10),
                         width: double.infinity,
-                        child: const Text("Configurações")))
+                        child: const Text("Meu dados")))
               ],
             ),
           ),
