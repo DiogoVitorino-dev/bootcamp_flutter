@@ -1,5 +1,7 @@
-import 'package:bootcamp_flutter/pages/cadastros.dart';
-import 'package:bootcamp_flutter/pages/dados.dart';
+import 'package:bootcamp_flutter/pages/assets.dart';
+import 'package:bootcamp_flutter/pages/list_view_h.dart';
+import 'package:bootcamp_flutter/pages/list_view_v.dart';
+import 'package:bootcamp_flutter/shared/widgets/appDrawer.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
@@ -10,6 +12,8 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  PageController controller = PageController();
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -17,44 +21,17 @@ class _HomeState extends State<Home> {
         appBar: AppBar(
           title: const Text("Home"),
         ),
-        drawer: Drawer(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-            child: Column(
-              children: [
-                InkWell(
-                    onTap: () {
-                      Navigator.pop(context);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const Cadastro(title: "Cadastro"),
-                          ));
-                    },
-                    child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        width: double.infinity,
-                        child: const Text("Cadastros"))),
-                const Divider(),
-                const SizedBox(
-                  height: 3,
-                ),
-                InkWell(
-									onTap: () {
-                      Navigator.pop(context);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const Dados(),
-                          ));
-                    },
-                    child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        width: double.infinity,
-                        child: const Text("Meu dados")))
-              ],
-            ),
-          ),
+        drawer: const AppDrawer(),
+        body: Expanded(
+          child: PageView(
+              scrollDirection: Axis.vertical,
+              controller: controller,
+              children: const [
+                AssetsPage(),
+								ListViewH(),
+								ListViewV(),
+
+              ]),
         ),
       ),
     );

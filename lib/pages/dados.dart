@@ -1,4 +1,4 @@
-import 'package:bootcamp_flutter/repositories/repositoryData.dart';
+import 'package:bootcamp_flutter/repositories/repositoryDataUser.dart';
 import 'package:bootcamp_flutter/shared/widgets/textLabel.dart';
 import 'package:flutter/material.dart';
 
@@ -27,7 +27,7 @@ class _DadosState extends State<Dados> {
 
     double selectedSalario = 5000;
 
-    RepositoryData repo = RepositoryData();
+    RepositoryDataUser repo = RepositoryDataUser();
 
     bool loading = false;
 
@@ -71,7 +71,7 @@ class _DadosState extends State<Dados> {
       appBar: AppBar(title: const Text("Meus dados")),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        child: ListView(
+        child: loading == true ? const CircularProgressIndicator() : ListView(
           children: [
             const TextLabel(texto: "Nome"),
             TextField(controller: nomeController),
