@@ -1,6 +1,7 @@
 import 'package:bootcamp_flutter/pages/cadastros.dart';
 import 'package:bootcamp_flutter/pages/dados.dart';
 import 'package:bootcamp_flutter/pages/login.dart';
+import 'package:bootcamp_flutter/pages/randomNumbers.dart';
 import 'package:flutter/material.dart';
 
 class AppDrawer extends StatelessWidget {
@@ -64,6 +65,29 @@ class AppDrawer extends StatelessWidget {
                       Icon(Icons.format_list_bulleted),
                       SizedBox(width: 5),
                       Text("Cadastros"),
+                    ],
+                  ))),
+          const Divider(),
+          const SizedBox(
+            height: 10,
+          ),
+					InkWell(
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const RandomNumbers(),
+                    ));
+              },
+              child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  width: double.infinity,
+                  child: const Row(
+                    children: [
+                      Icon(Icons.numbers),
+                      SizedBox(width: 5),
+                      Text("Números aleatórios"),
                     ],
                   ))),
           const Divider(),

@@ -34,7 +34,7 @@ class _LoginState extends State<Login> {
                     children: [
                       Expanded(child: Container()),
                       Expanded(
-                          flex: 5,
+                          flex: 2,
                           child: Image.network(
                               "https://lp.dio.me/wp-content/uploads/2023/03/LOGO-DIO-COLOR.png")),
                       Expanded(child: Container())
