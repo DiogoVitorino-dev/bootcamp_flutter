@@ -1,33 +1,36 @@
-import 'package:bootcamp_flutter/models/tarefa.dart';
+import 'package:bootcamp_flutter/database/databaseSqlite.dart';
+import 'package:bootcamp_flutter/database/models/TarefaModelDB.dart';
 
 class RepositoryTarefa {
-  List<Tarefa> _tarefas = [];
+  Future<List<TarefaModelDB>> getAll({bool? apenasNaoConcluidos}) async {
+    var db = await DatabaseSQLITE.getInstance();
+    var queryResult = await db.rawQuery(
+			apenasNaoConcluidos == true
+			? "SELECT * FROM tarefas WHERE concluido = 0"
+			: "SELECT * FROM tarefas"
+		);
 
-  Future<void> adicionar(Tarefa tarefa) async {await Future.delayed(const Duration(seconds: 1)); _tarefas.add(tarefa);}
-
-  Future<void> remover(String id) async {
-		await Future.delayed(const Duration(seconds: 1));
-		_tarefas.removeWhere((tarefa) => tarefa.id == id);
-	}
-  Future<void> alterar(Tarefa tarefa) async {
-		await Future.delayed(const Duration(seconds: 1));
-		_tarefas.map(
-		(oldTarefa) => oldTarefa.id == tarefa.id ? tarefa : oldTarefa,
-	);}
-  Future<Tarefa> buscar(String descricao) async{
-		await Future.delayed(const Duration(seconds: 1));
-		return _tarefas.where(
-			(tarefa) => RegExp("$descricao*").hasMatch(tarefa.descricao)
-		).first;
-	}
-
-  Future<List<Tarefa>> listarTarefas() async {
-    await Future.delayed(const Duration(seconds: 1));
-    return _tarefas;
+    return queryResult.map((element) {
+      return TarefaModelDB(int.parse(element["id"].toString()),
+          element["concluido"] == 1, element["descricao"].toString());
+    }).toList();
   }
 
-	Future<List<Tarefa>> listarTarefasNaoConcluidas() async {
-    await Future.delayed(const Duration(seconds: 1));
-    return _tarefas.where((tarefas) => !tarefas.concluido).toList();
+  Future<void> add(TarefaModelDB tarefa) async {
+    var db = await DatabaseSQLITE.getInstance();
+    await db.rawInsert("INSERT INTO tarefas (concluido,descricao) values(?,?)",
+        [tarefa.concluido, tarefa.descricao]);
+  }
+
+  Future<void> update(TarefaModelDB tarefa) async {
+    var db = await DatabaseSQLITE.getInstance();
+    await db.rawUpdate(
+        "UPDATE tarefas SET descricao = ?, concluido = ? WHERE id = ?",
+        [tarefa.descricao, tarefa.concluido, tarefa.id]);
+  }
+
+  Future<void> delete(int id) async {
+    var db = await DatabaseSQLITE.getInstance();
+    await db.rawDelete("DELETE FROM tarefas WHERE id = ?", [id]);
   }
 }
