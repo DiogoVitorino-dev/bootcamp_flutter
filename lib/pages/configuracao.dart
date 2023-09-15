@@ -34,13 +34,12 @@ class _ConfiguracaoState extends State<Configuracao> {
   }
 
   void restoreValues() async {
-    setState(() {
-      darkTheme = appStorage.getDarkTheme_Config() ?? false;
-      receiveNotification = appStorage.getNotification_Config() ?? false;
+    darkTheme = await appStorage.getDarkTheme_Config() ?? false;
+    receiveNotification = await appStorage.getNotification_Config() ?? false;
 
-      usuarioController.text = appStorage.getUsuario_Config();
-      alturaController.text = appStorage.getAltura_Config().toString();
-    });
+    usuarioController.text = await appStorage.getUsuario_Config();
+    alturaController.text = (await appStorage.getAltura_Config()).toString();
+    setState(() {});
   }
 
   void onSave() async {

@@ -1,4 +1,4 @@
-import 'package:bootcamp_flutter/models/tarefa.dart';
+import 'package:bootcamp_flutter/models/tarefaModel.dart';
 import 'package:bootcamp_flutter/repositories/repositoryTarefa.dart';
 import 'package:flutter/material.dart';
 
@@ -10,18 +10,44 @@ class TarefaPage extends StatefulWidget {
 }
 
 class _TarefaPageState extends State<TarefaPage> {
-  var tarefaRepository = RepositoryTarefa();
+  var repository = RepositoryTarefa.create();
   TextEditingController descController = TextEditingController();
-  final List<Tarefa> _tarefas = [];
+  final List<TarefaModel> _tarefas = [];
   bool listaNaoConcluidos = false;
 
-  void getTarefas() async {
-    if (listaNaoConcluidos == true) {
-      _tarefas.setAll(0, await tarefaRepository.listarTarefasNaoConcluidas());
-    } else {
-      _tarefas.setAll(0, await tarefaRepository.listarTarefas());
-    }
-    setState(() {});
+  void getTarefas() {
+    setState(() {
+			if(listaNaoConcluidos) {
+      	_tarefas.setAll(0, repository.restore(listaNaoConcluidos: listaNaoConcluidos));
+			}
+      _tarefas.setAll(0, repository.restore());
+    });
+  }
+
+  Future<void> initFields() async {
+    repository = await RepositoryTarefa.load();
+  }
+
+  @override
+  void initState() {
+    initFields();
+    getTarefas();
+    super.initState();
+  }
+
+  Future<void> onSave() async {
+    getTarefas();
+    await repository.save(TarefaModel(false, descController.text));
+  }
+
+  Future<void> onUpdate(TarefaModel model) async {
+    getTarefas();
+    await repository.update(model);
+  }
+
+	Future<void> onDelete(TarefaModel model) async {
+    getTarefas();
+    await repository.delete(model);
   }
 
   @override
@@ -39,8 +65,7 @@ class _TarefaPageState extends State<TarefaPage> {
                 actions: [
                   TextButton(
                       onPressed: () {
-                        tarefaRepository
-                            .adicionar(Tarefa(false, descController.text));
+                        onSave();
                         Navigator.pop(context);
                       },
                       child: const Text("Salvar")),
@@ -81,9 +106,9 @@ class _TarefaPageState extends State<TarefaPage> {
                 itemBuilder: (BuildContext bc, int index) {
                   var tarefa = _tarefas[index];
                   return Dismissible(
-                    key: Key(tarefa.id),
+                    key: Key(tarefa.key),
                     onDismissed: (direction) async {
-                      await tarefaRepository.remover(tarefa.id);
+                      onDelete(tarefa);
                     },
                     child: ListTile(
                       title: Text(tarefa.descricao),
@@ -91,7 +116,7 @@ class _TarefaPageState extends State<TarefaPage> {
                         value: tarefa.concluido,
                         onChanged: (value) {
                           tarefa.concluido = value;
-                          tarefaRepository.alterar(tarefa);
+                          onUpdate(tarefa);
                           getTarefas();
                         },
                       ),

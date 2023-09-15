@@ -1,5 +1,6 @@
+import 'package:bootcamp_flutter/models/dadosModel.dart';
 import 'package:bootcamp_flutter/repositories/repositoryDataUser.dart';
-import 'package:bootcamp_flutter/service/appStorage.dart';
+import 'package:bootcamp_flutter/repositories/repositoryDados.dart';
 import 'package:bootcamp_flutter/shared/widgets/textLabel.dart';
 import 'package:flutter/material.dart';
 
@@ -16,41 +17,33 @@ class _DadosState extends State<Dados> {
     TextEditingController nomeController = TextEditingController(text: "");
     TextEditingController dataNascController = TextEditingController(text: "");
 
-    DateTime? selectedDate;
-
     List<String> niveis = [];
-    var selectedNivel = "";
 
     List<String> programLin = [];
-    List<String> selectedProgramLin = [];
-
-    int tempoExp = 0;
-
-    double selectedSalario = 0;
 
     RepositoryDataUser repo = RepositoryDataUser();
 
-    final appStorage = AppStorage();
+    final repository = RepositoryDados.create();
+    var model = DadosModel.vazio();
 
     bool loading = false;
 
     void onSave() async {
-      await appStorage.setNome_Cadastro(nomeController.text);
-      await appStorage.setDataNasc_Cadastro(selectedDate!);
-      await appStorage.setSalario_Cadastro(selectedSalario);
-      await appStorage.setLinguagemPref_Cadastro(selectedProgramLin);
-      await appStorage.setNivel_Cadastro(selectedNivel);
-      await appStorage.setExperiencia_Cadastro(tempoExp);
+			
+      await repository.save(model);
     }
 
-    void initFields() {
+    void initFields() async {
+      DadosModel restored = repository.restore();
+
       setState(() {
-        nomeController.text = appStorage.getNome_Cadastro();
-        selectedDate = appStorage.getDataNasc_Cadastro();
-        selectedSalario = appStorage.getSalario_Cadastro();
-        selectedProgramLin = appStorage.getLinguagemPref_Cadastro();
-        selectedNivel = appStorage.getNivel_Cadastro();
-        tempoExp = appStorage.getExperiencia_Cadastro();
+        model = restored;
+
+        if (restored.dataNasc != null) {
+          dataNascController.text = restored.dataNasc!.toLocal().toString();
+        }
+
+        nomeController.text = model.nome;
       });
     }
 
@@ -69,11 +62,11 @@ class _DadosState extends State<Dados> {
       try {
         if (nomeController.text.trim().length < 3) {
           throw "Nome deve ser preenchido";
-        } else if (selectedDate == null) {
+        } else if (model.dataNasc == null) {
           throw "Data de nascimento inválida";
-        } else if (selectedNivel.trim().isEmpty) {
+        } else if (model.nivelProg.trim().isEmpty) {
           throw "O nível deve ser selecionado";
-        } else if (selectedProgramLin.isEmpty) {
+        } else if (model.linPreferencia.isEmpty) {
           throw "Deve ser selecionado ao menos uma linguagem preferida";
         }
       } catch (err) {
@@ -117,7 +110,7 @@ class _DadosState extends State<Dados> {
 
                       if (data != null) {
                         dataNascController.text = data.toLocal().toString();
-                        selectedDate = data;
+                        model.dataNasc = data;
                       }
                     },
                   ),
@@ -130,13 +123,13 @@ class _DadosState extends State<Dados> {
                         .map((nivel) => RadioListTile(
                             title: Text(nivel),
                             dense: true,
-                            selected: nivel == selectedNivel,
+                            selected: nivel == model.nivelProg,
                             value: nivel,
                             groupValue: nivel,
                             onChanged: (value) {
                               setState(() {
                                 if (value != null) {
-                                  selectedNivel = value;
+                                  model.nivelProg = value;
                                 }
                               });
                             }))
@@ -151,13 +144,13 @@ class _DadosState extends State<Dados> {
                         .map((lin) => CheckboxListTile(
                               title: Text(lin),
                               dense: true,
-                              value: selectedProgramLin.contains(lin),
+                              value: model.linPreferencia.contains(lin),
                               onChanged: (value) {
                                 setState(() {
                                   if (value == true) {
-                                    selectedProgramLin.add(lin);
+                                    model.linPreferencia.add(lin);
                                   } else {
-                                    selectedProgramLin.remove(lin);
+                                    model.linPreferencia.remove(lin);
                                   }
                                 });
                               },
@@ -169,12 +162,12 @@ class _DadosState extends State<Dados> {
                   ),
                   const TextLabel(texto: "Tempo de experiência"),
                   DropdownButton(
-                    value: tempoExp,
+                    value: model.tempoExp,
                     items: generateList(),
                     onChanged: (value) {
                       setState(() {
                         if (value != null) {
-                          tempoExp = value;
+                          model.tempoExp = value;
                         }
                       });
                     },
@@ -184,14 +177,14 @@ class _DadosState extends State<Dados> {
                   ),
                   TextLabel(
                       texto:
-                          "Pretensão Salarial: R\$ ${selectedSalario.toStringAsFixed(2)}"),
+                          "Pretensão Salarial: R\$ ${model.salario.toStringAsFixed(2)}"),
                   Slider(
-                    value: selectedSalario,
+                    value: model.salario,
                     min: 0,
                     max: 10000,
                     onChanged: (value) {
                       setState(() {
-                        selectedSalario = value;
+                        model.salario = value;
                       });
                     },
                   ),

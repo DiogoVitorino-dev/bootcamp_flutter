@@ -1,4 +1,5 @@
-import 'package:bootcamp_flutter/service/appStorage.dart';
+import 'package:bootcamp_flutter/models/random.dart';
+import 'package:bootcamp_flutter/repositories/repositoryRandom.dart';
 import 'package:bootcamp_flutter/service/generateRandom.dart';
 import 'package:flutter/material.dart';
 
@@ -10,21 +11,17 @@ class RandomNumbers extends StatefulWidget {
 }
 
 class _RandomNumbersState extends State<RandomNumbers> {
-  int num = 0;
-  int quantityNum = 0;
-  final appStorage = AppStorage();
-
+  var model = RandomModel.vazio();
+  final repository = RepositoryRandom.create();
 
   void onSave() async {
-    await appStorage.setRandomNumber_Random(num);
-    await appStorage.setQuantity_Random(quantityNum);
+    await repository.save(model);
   }
 
-  void initFields() async {
+  void initFields() {
     setState(() {
-      num = appStorage.getRandomNumber_Random();
-      quantityNum = appStorage.getQuantity_Random();
-    });
+			model = repository.restore();
+		});
   }
 
   @override
@@ -42,11 +39,11 @@ class _RandomNumbersState extends State<RandomNumbers> {
       body: Column(
         children: [
           Text(
-            num.toString(),
+            model.randomNumber.toString(),
             style: const TextStyle(fontSize: 26),
           ),
-					Text(
-            quantityNum.toString(),
+          Text(
+            model.quantityNum.toString(),
             style: const TextStyle(fontSize: 26),
           ),
         ],
@@ -54,8 +51,8 @@ class _RandomNumbersState extends State<RandomNumbers> {
       floatingActionButton: FloatingActionButton(
           onPressed: () {
             setState(() {
-              num = GenerateRandom.generate(100);
-              quantityNum++;
+              model.randomNumber = GenerateRandom.generate(100);
+              model.quantityNum++;
             });
             onSave();
           },

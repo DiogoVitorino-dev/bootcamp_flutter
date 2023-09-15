@@ -1,33 +1,43 @@
-import 'package:bootcamp_flutter/models/tarefa.dart';
+import 'package:bootcamp_flutter/models/tarefaModel.dart';
+import 'package:hive/hive.dart';
+
+enum REPOSITORY_KEYS {
+  BOX_TAREFA,
+}
 
 class RepositoryTarefa {
-  List<Tarefa> _tarefas = [];
+  static late Box _box;
 
-  Future<void> adicionar(Tarefa tarefa) async {await Future.delayed(const Duration(seconds: 1)); _tarefas.add(tarefa);}
+  RepositoryTarefa.create();
 
-  Future<void> remover(String id) async {
-		await Future.delayed(const Duration(seconds: 1));
-		_tarefas.removeWhere((tarefa) => tarefa.id == id);
-	}
-  Future<void> alterar(Tarefa tarefa) async {
-		await Future.delayed(const Duration(seconds: 1));
-		_tarefas.map(
-		(oldTarefa) => oldTarefa.id == tarefa.id ? tarefa : oldTarefa,
-	);}
-  Future<Tarefa> buscar(String descricao) async{
-		await Future.delayed(const Duration(seconds: 1));
-		return _tarefas.where(
-			(tarefa) => RegExp("$descricao*").hasMatch(tarefa.descricao)
-		).first;
-	}
-
-  Future<List<Tarefa>> listarTarefas() async {
-    await Future.delayed(const Duration(seconds: 1));
-    return _tarefas;
+  static Future<RepositoryTarefa> load() async {
+    if (!Hive.isBoxOpen(REPOSITORY_KEYS.BOX_TAREFA.toString())) {
+      _box = await Hive.openBox(REPOSITORY_KEYS.BOX_TAREFA.toString());
+    } else {
+      _box = Hive.box(REPOSITORY_KEYS.BOX_TAREFA.toString());
+    }
+    return RepositoryTarefa.create();
   }
 
-	Future<List<Tarefa>> listarTarefasNaoConcluidas() async {
-    await Future.delayed(const Duration(seconds: 1));
-    return _tarefas.where((tarefas) => !tarefas.concluido).toList();
+  Future<void> save(TarefaModel model) async {
+    await _box.add(model);
+  }
+
+  Future<void> update(TarefaModel model) async {
+    await _box.put(model.key, model);
+  }
+
+  Future<void> delete(TarefaModel model) async {
+    await _box.delete(model.key);
+  }
+
+  List<TarefaModel> restore({bool listaNaoConcluidos = false}) {
+    if (listaNaoConcluidos == true) {
+      return _box.values
+          .cast<TarefaModel>()
+          .where((element) => !element.concluido)
+          .toList();
+    }
+    return _box.values.cast<TarefaModel>().toList();
   }
 }
