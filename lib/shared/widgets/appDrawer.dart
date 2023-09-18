@@ -138,7 +138,6 @@ class AppDrawer extends StatelessWidget {
                             ),
                           ],
                         ));
-                    ;
                   },
                 );
               },
