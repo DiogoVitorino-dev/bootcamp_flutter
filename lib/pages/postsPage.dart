@@ -1,6 +1,7 @@
 import 'package:bootcamp_flutter/models/PostModel.dart';
 import 'package:bootcamp_flutter/repository/postsRepository.dart';
-import 'package:bootcamp_flutter/shared/widgets/CardPost.dart';
+import 'package:bootcamp_flutter/shared/widgets/cardPost.dart';
+import 'package:bootcamp_flutter/shared/widgets/commentsBottomSheet.dart';
 import 'package:flutter/material.dart';
 
 class PostsPage extends StatefulWidget {
@@ -32,7 +33,21 @@ class _PostsPageState extends State<PostsPage> {
         itemCount: posts.length,
         itemBuilder: (_, index) {
           var post = posts[index];
-          return CardPost(idPost: post.id, title: post.title, body: post.body);
+          return CardPost(
+            idPost: post.id,
+            title: post.title,
+            body: post.body,
+            onPress: () {
+              showModalBottomSheet(
+                context: context,
+                builder: (context) => Wrap(
+                  children: [
+                    CommentsBottomSheet(postId: post.id),
+                  ],
+                ),
+              );
+            },
+          );
         },
       ),
     );
