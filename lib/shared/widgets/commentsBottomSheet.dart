@@ -1,5 +1,6 @@
 import 'package:bootcamp_flutter/models/CommentModel.dart';
-import 'package:bootcamp_flutter/repository/commentsRepository.dart';
+import 'package:bootcamp_flutter/repository/comments/impl/commentsDioRepository.dart';
+import 'package:bootcamp_flutter/repository/comments/impl/commentsRepository.dart';
 import 'package:bootcamp_flutter/shared/widgets/cardPost.dart';
 import 'package:flutter/material.dart';
 
@@ -13,7 +14,7 @@ class CommentsBottomSheet extends StatefulWidget {
 
 class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
   List<CommentModel> list = [];
-  var repository = CommentsRepository();
+  var repository = CommentsDioRepository();
 
   Future<void> getComments() async {
     list = await repository.getComments(widget.postId);

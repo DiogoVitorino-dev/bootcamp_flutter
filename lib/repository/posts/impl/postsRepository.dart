@@ -2,9 +2,12 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:bootcamp_flutter/models/PostModel.dart';
+import 'package:bootcamp_flutter/repository/posts/PostsAPI_interface.dart';
 import 'package:http/http.dart' as http;
 
-class PostsRepository {
+class PostsRepository implements IPostsAPI{
+  
+  @override
   Future<List<PostModel>> getPosts() async {
     Uri url = Uri.parse("https://jsonplaceholder.typicode.com/posts?limit=10");
     var response = await http.get(url);

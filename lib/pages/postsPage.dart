@@ -1,5 +1,5 @@
 import 'package:bootcamp_flutter/models/PostModel.dart';
-import 'package:bootcamp_flutter/repository/postsRepository.dart';
+import 'package:bootcamp_flutter/repository/posts/impl/postsDioRepository.dart';
 import 'package:bootcamp_flutter/shared/widgets/cardPost.dart';
 import 'package:bootcamp_flutter/shared/widgets/commentsBottomSheet.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +12,7 @@ class PostsPage extends StatefulWidget {
 }
 
 class _PostsPageState extends State<PostsPage> {
-  var repository = PostsRepository();
+  var repository = PostsDioRepository();
   List<PostModel> posts = [];
 
   @override
