@@ -1,6 +1,5 @@
 import 'package:bootcamp_flutter/models/CommentModel.dart';
 import 'package:bootcamp_flutter/repository/comments/impl/commentsDioRepository.dart';
-import 'package:bootcamp_flutter/repository/comments/impl/commentsRepository.dart';
 import 'package:bootcamp_flutter/shared/widgets/cardPost.dart';
 import 'package:flutter/material.dart';
 
