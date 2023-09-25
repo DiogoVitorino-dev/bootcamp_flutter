@@ -11,28 +11,40 @@ class CardHero extends StatelessWidget {
     return Card(
       child: Row(
         children: [
-          hero.thumbnail.path.isNotEmpty
-              ? Image.network(hero.thumbnail.path)
-              : const Icon(Icons.account_box),
-          Padding(
+          Image.network(
+            hero.thumbnail.path,
+            width: 150,
+            height: 150,
+            errorBuilder: (context, error, stackTrace) =>
+                const Icon(Icons.bolt_sharp,size: 150),
+          ),
+          Padding(          
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  hero.name,
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w700),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  hero.description,
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w400),
-                ),
-              ],
+            child: Expanded(
+              child: Column(                                        
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    hero.name,
+                    overflow: TextOverflow.ellipsis,                  
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.w700),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    hero.description,
+                    overflow: TextOverflow.ellipsis,
+                    softWrap: true,                  
+                    maxLines:4 ,
+            
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.w400),
+                  ),
+                ],
+              ),
             ),
           )
         ],

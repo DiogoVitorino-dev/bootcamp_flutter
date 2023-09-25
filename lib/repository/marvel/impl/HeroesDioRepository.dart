@@ -10,26 +10,25 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class HeroesDioRepository implements IMarvelHeroAPI {
   @override
-  Future<List<MarvelHeroModel>> getHeroes() async {
+  Future<List<MarvelHeroModel>> getHeroes(int offset) async {
     var dio = CustomMarvelDio().getInstance;
 
     var ts = DateTime.now().microsecondsSinceEpoch.toString();
     var publicKey = dotenv.get("MARVELPUBLICKEY");
     var apiKey = dotenv.get("MARVELAPIKEY");
 
-
     if (publicKey.isEmpty || apiKey.isEmpty) {
-      throw "PRIVATE KEY OR API KEY NOT SET";
+      throw "MISSING MARVELPUBLICKEY OR MARVELAPIKEY VALUES AT ENVIRONMENT VARIABLES";
     }
 
     var hash = _generateMD5(ts + apiKey + publicKey);
-    var params = "ts=$ts&apikey=$publicKey&hash=$hash";
+    var params = "offset=$offset&=$ts&apikey=$publicKey&hash=$hash";
 
-    var url = "https://gateway.marvel.com/v1/public/characters?$params";
+    var url = "/v1/public/characters?$params";
     var response = await dio.get(url);
 
     if (response.statusCode == HttpStatus.ok) {
-      List<dynamic> list = response.data.results;
+      List<dynamic> list = response.data["data"]["results"];
       return list.map((e) => MarvelHeroModel.fromJson(e)).toList();
     }
 
