@@ -1,4 +1,5 @@
-import 'package:bootcamp_flutter/home/HomePage.dart';
+
+import 'package:bootcamp_flutter/pages/home/HomePage.dart';
 import 'package:flutter/material.dart';
 
 class App extends StatelessWidget {
